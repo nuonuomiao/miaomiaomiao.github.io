@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>番剧观看记录表</title>
+    <style>
+        /* 优化后的表格样式 */
+        .anime-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        .anime-table th, .anime-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            min-width: 80px;
+        }
+        .anime-table th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+        .anime-table tr:hover td:not(.year-cell) {
+            background-color: #f5f5f5;
+        }
+        
+        /* 点击效果 */
+        .watched {
+            background-color: #4CAF50 !important;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        
+        /* 年份列特殊样式 */
+        .year-cell {
+            background-color: #e9f7fe;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; margin-bottom: 30px;">番剧观看记录表</h1>
+    
+    <!-- 新表格结构：第一列年份 + 10列番剧 -->
+    <table class="anime-table" id="animeTable">
+        <thead>
+            <tr>
+                <th>年份</th>
+                <th>番剧1</th>
+                <th>番剧2</th>
+                <th>番剧3</th>
+                <th>番剧4</th>
+                <th>番剧5</th>
+                <th>番剧6</th>
+                <th>番剧7</th>
+                <th>番剧8</th>
+                <th>番剧9</th>
+                <th>番剧10</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 示例数据 -->
+            <tr>
+                <td class="year-cell">2023</td>
+                <td>咒术回战</td>
+                <td>间谍过家家</td>
+                <td>我推的孩子</td>
+                <td>地狱乐</td>
+                <td>天国大魔境</td>
+                <td>无神世界</td>
+                <td>跃动青春</td>
+                <td>冰海战记</td>
+                <td>葬送的芙莉莲</td>
+                <td>不死不幸</td>
+            </tr>
+            <tr>
+                <td class="year-cell">2022</td>
+                <td>孤独摇滚</td>
+                <td>电锯人</td>
+                <td>间谍过家家</td>
+                <td>莉可丽丝</td>
+                <td>夏日重现</td>
+                <td>契约之吻</td>
+                <td>路人女主</td>
+                <td>辉夜大小姐</td>
+                <td>更衣人偶</td>
+                <td>蓝色监狱</td>
+            </tr>
+            <!-- 更多行... -->
+        </tbody>
+    </table>
+
+    <script>
+        // 修复后的点击事件处理
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.getElementById('animeTable');
+            
+            table.addEventListener('click', function(event) {
+                const target = event.target;
+                
+                // 确保点击的是表格单元格且不是年份列
+                if (target.tagName === 'TD' && !target.classList.contains('year-cell')) {
+                    target.classList.toggle('watched');
+                    
+                    // 可选：添加本地存储功能
+                    const animeName = target.textContent;
+                    const year = target.parentElement.querySelector('.year-cell').textContent;
+                    console.log(`标记番剧：${year}年 - ${animeName}`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
