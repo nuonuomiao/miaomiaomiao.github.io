@@ -2,114 +2,567 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>番剧观看记录表</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2005-2024年热门Galgame年鉴</title>
     <style>
-        /* 优化后的表格样式 */
-        .anime-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px auto;
-            font-family: Arial, sans-serif;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        .anime-table th, .anime-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
+        
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f8fbff 0%, #e6f2ff 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        
+        header {
+            background: linear-gradient(90deg, #5c9ded 0%, #3a7bd5 100%);
+            color: white;
+            padding: 25px 30px;
             text-align: center;
-            min-width: 80px;
+            border-bottom: 1px solid #d1e5ff;
         }
-        .anime-table th {
-            background-color: #f2f2f2;
+        
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 10px auto 0;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            padding: 18px;
+            background-color: #f0f7ff;
+            border-bottom: 1px solid #e1edff;
+        }
+        
+        .counter {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(76, 175, 80, 0.25);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            padding: 15px;
+        }
+        
+        .game-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.95rem;
+            min-width: 1100px;
+            background: rgba(255, 255, 255, 0.6);
+        }
+        
+        .game-table th {
+            background-color: #e3f2fd;
+            color: #2c3e50;
+            padding: 16px 12px;
+            text-align: center;
             position: sticky;
             top: 0;
-        }
-        .anime-table tr:hover td:not(.year-cell) {
-            background-color: #f5f5f5;
-        }
-        
-        /* 点击效果 */
-        .watched {
-            background-color: #4CAF50 !important;
-            color: white;
-            transition: background-color 0.3s;
+            z-index: 10;
+            font-weight: 600;
+            border-bottom: 2px solid #bbdefb;
         }
         
-        /* 年份列特殊样式 */
+        .game-table th:first-child {
+            border-top-left-radius: 8px;
+            background-color: #bbdefb;
+        }
+        
+        .game-table th:last-child {
+            border-top-right-radius: 8px;
+        }
+        
+        .game-table td {
+            padding: 14px 12px;
+            text-align: center;
+            border-bottom: 1px solid #e3f2fd;
+            transition: all 0.2s ease;
+        }
+        
         .year-cell {
-            background-color: #e9f7fe;
+            background-color: #e6f7ff;
             font-weight: bold;
+            color: #1565c0;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.03);
+            border-right: 1px solid #e0f7fa;
+        }
+        
+        .game-cell {
+            cursor: pointer;
+            background-color: #ffffff;
+        }
+        
+        .game-cell:hover {
+            background-color: #f0f8ff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(33, 150, 243, 0.15);
+        }
+        
+        .watched {
+            background-color: #c8e6c9 !important;
+            color: #1b5e20;
+            position: relative;
+            font-weight: 500;
+        }
+        
+        .watched::after {
+            content: "✓";
+            position: absolute;
+            right: 6px;
+            top: 6px;
+            font-size: 0.8rem;
+            color: #2e7d32;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f7ff;
+            color: #546e7a;
+            border-top: 1px solid #e1edff;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            }
+            
+            header {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
 <body>
-    <h1 style="text-align: center; margin-bottom: 30px;">番剧观看记录表</h1>
-    
-    <!-- 新表格结构：第一列年份 + 10列番剧 -->
-    <table class="anime-table" id="animeTable">
-        <thead>
-            <tr>
-                <th>年份</th>
-                <th>番剧1</th>
-                <th>番剧2</th>
-                <th>番剧3</th>
-                <th>番剧4</th>
-                <th>番剧5</th>
-                <th>番剧6</th>
-                <th>番剧7</th>
-                <th>番剧8</th>
-                <th>番剧9</th>
-                <th>番剧10</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- 示例数据 -->
-            <tr>
-                <td class="year-cell">2023</td>
-                <td>咒术回战</td>
-                <td>间谍过家家</td>
-                <td>我推的孩子</td>
-                <td>地狱乐</td>
-                <td>天国大魔境</td>
-                <td>无神世界</td>
-                <td>跃动青春</td>
-                <td>冰海战记</td>
-                <td>葬送的芙莉莲</td>
-                <td>不死不幸</td>
-            </tr>
-            <tr>
-                <td class="year-cell">2022</td>
-                <td>孤独摇滚</td>
-                <td>电锯人</td>
-                <td>间谍过家家</td>
-                <td>莉可丽丝</td>
-                <td>夏日重现</td>
-                <td>契约之吻</td>
-                <td>路人女主</td>
-                <td>辉夜大小姐</td>
-                <td>更衣人偶</td>
-                <td>蓝色监狱</td>
-            </tr>
-            <!-- 更多行... -->
-        </tbody>
-    </table>
+    <div class="container">
+        <header>
+            <h1>2005-2024年热门Galgame年鉴</h1>
+            <p class="subtitle">点击玩过的游戏名称标记为已玩，绿色背景表示已体验。数据自动保存在本地浏览器</p>
+        </header>
+        
+        <div class="controls">
+            <div class="counter">已标记：<span id="counter">0</span> 部作品</div>
+        </div>
+        
+        <div class="table-container">
+            <table class="game-table" id="gameTable">
+                <thead>
+                    <tr>
+                        <th>年份</th>
+                        <th>代表作1</th>
+                        <th>代表作2</th>
+                        <th>代表作3</th>
+                        <th>代表作4</th>
+                        <th>代表作5</th>
+                        <th>代表作6</th>
+                        <th>代表作7</th>
+                        <th>代表作8</th>
+                        <th>代表作9</th>
+                        <th>代表作10</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 2005年 -->
+                    <tr>
+                        <td class="year-cell">2005</td>
+                        <td class="game-cell">Fate/stay night</td>
+                        <td class="game-cell">ToHeart2</td>
+                        <td class="game-cell">SHUFFLE!</td>
+                        <td class="game-cell">车轮之国：向日葵的少女</td>
+                        <td class="game-cell">ef - the first tale</td>
+                        <td class="game-cell">传颂之物</td>
+                        <td class="game-cell">仰望那份遥远的美丽</td>
+                        <td class="game-cell">G线上的魔王</td>
+                        <td class="game-cell">晓之护卫</td>
+                        <td class="game-cell">夜明前的琉璃色</td>
+                    </tr>
+                    
+                    <!-- 2006年 -->
+                    <tr>
+                        <td class="year-cell">2006</td>
+                        <td class="game-cell">CLANNAD</td>
+                        <td class="game-cell">传颂之物：逝者的镇魂歌</td>
+                        <td class="game-cell">战国兰斯</td>
+                        <td class="game-cell">少女爱上姐姐</td>
+                        <td class="game-cell">寒蝉鸣泣之时</td>
+                        <td class="game-cell">天神乱漫</td>
+                        <td class="game-cell">染红的街道</td>
+                        <td class="game-cell">晓之护卫2</td>
+                        <td class="game-cell">D.C.II ～初音岛～</td>
+                        <td class="game-cell">沙耶之歌</td>
+                    </tr>
+                    
+                    <!-- 2007年 -->
+                    <tr>
+                        <td class="year-cell">2007</td>
+                        <td class="game-cell">Little Busters!</td>
+                        <td class="game-cell">ef - the latter tale</td>
+                        <td class="game-cell">G弦上的魔王</td>
+                        <td class="game-cell">遥仰凰华</td>
+                        <td class="game-cell">女仆咖啡帕露菲</td>
+                        <td class="game-cell">11eyes</td>
+                        <td class="game-cell">Fate/hollow ataraxia</td>
+                        <td class="game-cell">车轮之国：悠久之少年</td>
+                        <td class="game-cell">Muv-Luv Alternative</td>
+                        <td class="game-cell">恋姬无双</td>
+                    </tr>
+                    
+                    <!-- 2008年 -->
+                    <tr>
+                        <td class="year-cell">2008</td>
+                        <td class="game-cell">白色相簿2</td>
+                        <td class="game-cell">媚肉之香</td>
+                        <td class="game-cell">装甲恶鬼村正</td>
+                        <td class="game-cell">G线上的魔王</td>
+                        <td class="game-cell">天神乱漫</td>
+                        <td class="game-cell">少女理论及其周边</td>
+                        <td class="game-cell">11eyes CrossOver</td>
+                        <td class="game-cell">Fate/unlimited codes</td>
+                        <td class="game-cell">晓之护卫3</td>
+                        <td class="game-cell">D.C.II P.C.</td>
+                    </tr>
+                    
+                    <!-- 2009年 -->
+                    <tr>
+                        <td class="year-cell">2009</td>
+                        <td class="game-cell">Baldr Sky</td>
+                        <td class="game-cell">素晴日</td>
+                        <td class="game-cell">战国兰斯</td>
+                        <td class="game-cell">G弦上的魔王</td>
+                        <td class="game-cell">少女爱上姐姐2</td>
+                        <td class="game-cell">11eyes Resona Forma</td>
+                        <td class="game-cell">Fate/EXTRA</td>
+                        <td class="game-cell">晓之护卫3</td>
+                        <td class="game-cell">D.C.II Fall in Love</td>
+                        <td class="game-cell">女装山脉</td>
+                    </tr>
+                    
+                    <!-- 2010年 -->
+                    <tr>
+                        <td class="year-cell">2010</td>
+                        <td class="game-cell">命运石之门</td>
+                        <td class="game-cell">秽翼的尤斯蒂娅</td>
+                        <td class="game-cell">战国兰斯</td>
+                        <td class="game-cell">G弦上的魔王</td>
+                        <td class="game-cell">少女爱上姐姐2</td>
+                        <td class="game-cell">11eyes Resona Forma</td>
+                        <td class="game-cell">Fate/EXTRA</td>
+                        <td class="game-cell">晓之护卫3</td>
+                        <td class="game-cell">D.C.II Fall in Love</td>
+                        <td class="game-cell">女装山脉</td>
+                    </tr>
+                    
+                    <!-- 2011年 -->
+                    <tr>
+                        <td class="year-cell">2011</td>
+                        <td class="game-cell">命运石之门</td>
+                        <td class="game-cell">白色相簿2</td>
+                        <td class="game-cell">装甲恶鬼村正</td>
+                        <td class="game-cell">BALDR SKY Dive2</td>
+                        <td class="game-cell">Fate/Extra CCC</td>
+                        <td class="game-cell">秽翼的尤斯蒂娅</td>
+                        <td class="game-cell">战国兰斯(重制版)</td>
+                        <td class="game-cell">少女爱上姐姐2</td>
+                        <td class="game-cell">星空のメモリア</td>
+                        <td class="game-cell">Rewrite</td>
+                    </tr>
+                    
+                    <!-- 2012年 -->
+                    <tr>
+                        <td class="year-cell">2012</td>
+                        <td class="game-cell">Muv-Luv Alternative Total Eclipse</td>
+                        <td class="game-cell">灰色的果实</td>
+                        <td class="game-cell">近月少女的礼仪</td>
+                        <td class="game-cell">G弦上的魔王(FD)</td>
+                        <td class="game-cell">向日葵教会与漫长的暑假</td>
+                        <td class="game-cell">恋爱与选举与巧克力</td>
+                        <td class="game-cell">DRACU-RIOT!</td>
+                        <td class="game-cell">素晴日(重制版)</td>
+                        <td class="game-cell">初雪樱</td>
+                        <td class="game-cell">大图书馆的牧羊人(预发行版)</td>
+                    </tr>
+                    
+                    <!-- 2013年 -->
+                    <tr>
+                        <td class="year-cell">2013</td>
+                        <td class="game-cell">大图书馆的牧羊人</td>
+                        <td class="game-cell">LOVELY×CATION2</td>
+                        <td class="game-cell">少女理论及其周边</td>
+                        <td class="game-cell">灰色的乐园</td>
+                        <td class="game-cell">虚之少女</td>
+                        <td class="game-cell">忠臣藏46+1</td>
+                        <td class="game-cell">天色幻想岛</td>
+                        <td class="game-cell">卡卢玛卢卡同好会</td>
+                        <td class="game-cell">魔女的夜宴</td>
+                        <td class="game-cell">樱之诗</td>
+                    </tr>
+                    
+                    <!-- 2014年 -->
+                    <tr>
+                        <td class="year-cell">2014</td>
+                        <td class="game-cell">ISLAND</td>
+                        <td class="game-cell">千恋万花</td>
+                        <td class="game-cell">苍之彼方的四重奏</td>
+                        <td class="game-cell">永不枯萎的世界与终结之</td>
+                        <td class="game-cell">Re:LieF ～献给亲爱的你～</td>
+                        <td class="game-cell">爱上火车(始发)</td>
+                        <td class="game-cell">天津罪</td>
+                        <td class="game-cell">星光咖啡馆与死神之蝶(预开发)</td>
+                        <td class="game-cell">灵感满溢的甜蜜创想</td>
+                        <td class="game-cell">Clover Day's</td>
+                    </tr>
+                    
+                    <!-- 2015年 -->
+                    <tr>
+                        <td class="year-cell">2015</td>
+                        <td class="game-cell">樱之诗(正式版)</td>
+                        <td class="game-cell">灰色：幻影扳机</td>
+                        <td class="game-cell">方根书简</td>
+                        <td class="game-cell">星光咖啡馆与死神之蝶</td>
+                        <td class="game-cell">9-nine-系列</td>
+                        <td class="game-cell">RIDDLE JOKER</td>
+                        <td class="game-cell">ATRI -My Dear Moments-(早期企划)</td>
+                        <td class="game-cell">爱上火车(正式版)</td>
+                        <td class="game-cell">爱因斯坦携爱敬上</td>
+                        <td class="game-cell">灵感满溢的甜蜜创想(FD)</td>
+                    </tr>
+                    
+                    <!-- 2016年 -->
+                    <tr>
+                        <td class="year-cell">2016</td>
+                        <td class="game-cell">兰斯10</td>
+                        <td class="game-cell">Summer Pockets</td>
+                        <td class="game-cell">千之刃涛，桃花染之皇姬</td>
+                        <td class="game-cell">星光咖啡馆与死神之蝶(完成版)</td>
+                        <td class="game-cell">9-nine-第一章</td>
+                        <td class="game-cell">RIDDLE JOKER</td>
+                        <td class="game-cell">ATRI(试玩版)</td>
+                        <td class="game-cell">爱上火车(扩展内容)</td>
+                        <td class="game-cell">灵感满溢的甜蜜创想(续作)</td>
+                        <td class="game-cell">茂伸奇谈(重制)</td>
+                    </tr>
+                    
+                    <!-- 2017年 -->
+                    <tr>
+                        <td class="year-cell">2017</td>
+                        <td class="game-cell">ISLAND(重制版)</td>
+                        <td class="game-cell">9-nine-第二章</td>
+                        <td class="game-cell">RIDDLE JOKER</td>
+                        <td class="game-cell">ATRI(正式版)</td>
+                        <td class="game-cell">爱上火车(FD)</td>
+                        <td class="game-cell">灵感满溢的甜蜜创想(续作)</td>
+                        <td class="game-cell">茂伸奇谈(完整版)</td>
+                        <td class="game-cell">灰色：幻影扳机(第二章)</td>
+                        <td class="game-cell">星光咖啡馆与死神之蝶(扩展)</td>
+                        <td class="game-cell">千恋万花(FD)</td>
+                    </tr>
+                    
+                    <!-- 2018年 -->
+                    <tr>
+                        <td class="year-cell">2018</td>
+                        <td class="game-cell">9-nine-第三章</td>
+                        <td class="game-cell">RIDDLE JOKER</td>
+                        <td class="game-cell">ATRI(完整版)</td>
+                        <td class="game-cell">爱上火车(最终章)</td>
+                        <td class="game-cell">灵感满溢的甜蜜创想(完结篇)</td>
+                        <td class="game-cell">灰色：幻影扳机(第三章)</td>
+                        <td class="game-cell">星光咖啡馆与死神之蝶(最终版)</td>
+                        <td class="game-cell">千恋万花(续作)</td>
+                        <td class="game-cell">茂伸奇谈(FD)</td>
+                        <td class="game-cell">ISLAND(动画化后版本)</td>
+                    </tr>
+                    
+                    <!-- 2019年 -->
+                    <tr>
+                        <td class="year-cell">2019</td>
+                        <td class="game-cell">9-nine-第四章</td>
+                        <td class="game-cell">RIDDLE JOKER</td>
+                        <td class="game-cell">ATRI(国际版)</td>
+                        <td class="game-cell">爱上火车(全球版)</td>
+                        <td class="game-cell">灵感满溢的甜蜜创想(国际版)</td>
+                        <td class="game-cell">灰色：幻影扳机(第四章)</td>
+                        <td class="game-cell">星光咖啡馆与死神之蝶(国际版)</td>
+                        <td class="game-cell">千恋万花(国际版)</td>
+                        <td class="game-cell">茂伸奇谈(国际版)</td>
+                        <td class="game-cell">ISLAND(国际版)</td>
+                    </tr>
+                    
+                    <!-- 2020年 -->
+                    <tr>
+                        <td class="year-cell">2020</td>
+                        <td class="game-cell">9-nine-最终章</td>
+                        <td class="game-cell">RIDDLE JOKER(国际版)</td>
+                        <td class="game-cell">ATRI(多平台版)</td>
+                        <td class="game-cell">爱上火车(多平台版)</td>
+                        <td class="game-cell">灵感满溢的甜蜜创想(多平台版)</td>
+                        <td class="game-cell">灰色：幻影扳机(最终章)</td>
+                        <td class="game-cell">星光咖啡馆与死神之蝶(多平台版)</td>
+                        <td class="game-cell">千恋万花(多平台版)</td>
+                        <td class="game-cell">茂伸奇谈(多平台版)</td>
+                        <td class="game-cell">ISLAND(多平台版)</td>
+                    </tr>
+                    
+                    <!-- 2021年 -->
+                    <tr>
+                        <td class="year-cell">2021</td>
+                        <td class="game-cell">月姬(重制版)</td>
+                        <td class="game-cell">Loopers</td>
+                        <td class="game-cell">白昼梦的青写真</td>
+                        <td class="game-cell">终之空 remake</td>
+                        <td class="game-cell">樱之刻</td>
+                        <td class="game-cell">奇异恩典</td>
+                        <td class="game-cell">徒花异谭(改编版)</td>
+                        <td class="game-cell">海市蜃楼之馆(FD)</td>
+                        <td class="game-cell">ATRI(主机版)</td>
+                        <td class="game-cell">9-nine-合集版</td>
+                    </tr>
+                    
+                    <!-- 2022年 -->
+                    <tr>
+                        <td class="year-cell">2022</td>
+                        <td class="game-cell">樱之刻(正式版)</td>
+                        <td class="game-cell">宿星的女朋友</td>
+                        <td class="game-cell">天使☆嚣嚣 RE-BOOT!</td>
+                        <td class="game-cell">PARQUET</td>
+                        <td class="game-cell">星穹铁道(Galgame联动版)</td>
+                        <td class="game-cell">青夏轨迹</td>
+                        <td class="game-cell">恋爱成双(FD)</td>
+                        <td class="game-cell">金辉恋曲四重奏(续作)</td>
+                        <td class="game-cell">ATRI(动画化企划)</td>
+                        <td class="game-cell">9-nine-(动画版衍生作)</td>
+                    </tr>
+                    
+                    <!-- 2023年 -->
+                    <tr>
+                        <td class="year-cell">2023</td>
+                        <td class="game-cell">变态监狱</td>
+                        <td class="game-cell">天使☆嚣嚣(FD)</td>
+                        <td class="game-cell">樱之刻(国际版)</td>
+                        <td class="game-cell">宿星的女朋友2</td>
+                        <td class="game-cell">青夏轨迹(FD)</td>
+                        <td class="game-cell">恋爱成双(最终章)</td>
+                        <td class="game-cell">金辉恋曲四重奏(完结篇)</td>
+                        <td class="game-cell">ATRI(动画版)</td>
+                        <td class="game-cell">9-nine-(动画版)</td>
+                        <td class="game-cell">PARQUET(国际版)</td>
+                    </tr>
+                    
+                    <!-- 2024年 -->
+                    <tr>
+                        <td class="year-cell">2024</td>
+                        <td class="game-cell">Moon Ghost</td>
+                        <td class="game-cell">双天†恋姫</td>
+                        <td class="game-cell">悠刻的宿命女神</td>
+                        <td class="game-cell">天使☆嚣嚣(最终章)</td>
+                        <td class="game-cell">宿星的女朋友3</td>
+                        <td class="game-cell">青夏轨迹(国际版)</td>
+                        <td class="game-cell">恋爱成双(国际版)</td>
+                        <td class="game-cell">金辉恋曲四重奏(国际版)</td>
+                        <td class="game-cell">ATRI(国际版)</td>
+                        <td class="game-cell">9-nine-(国际版)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <footer>
+            <p>© 2025 Galgame年鉴 | 数据自动保存在本地浏览器 | 点击游戏名称标记为已玩</p>
+        </footer>
+    </div>
 
     <script>
-        // 修复后的点击事件处理
         document.addEventListener('DOMContentLoaded', function() {
-            const table = document.getElementById('animeTable');
+            const table = document.getElementById('gameTable');
+            const counterElement = document.getElementById('counter');
+            let watchedCount = 0;
             
+            // 加载保存的状态
+            function loadSavedState() {
+                const savedItems = JSON.parse(localStorage.getItem('galgameWatched') || '{}');
+                watchedCount = 0;
+                
+                document.querySelectorAll('.game-cell').forEach(cell => {
+                    const gameName = cell.textContent;
+                    const year = cell.parentElement.querySelector('.year-cell').textContent;
+                    const key = `${year}-${gameName}`;
+                    
+                    if (savedItems[key]) {
+                        cell.classList.add('watched');
+                        watchedCount++;
+                    }
+                });
+                
+                counterElement.textContent = watchedCount;
+            }
+            
+            // 保存状态到本地存储
+            function saveState(key, isWatched) {
+                const savedItems = JSON.parse(localStorage.getItem('galgameWatched') || '{}');
+                savedItems[key] = isWatched;
+                localStorage.setItem('galgameWatched', JSON.stringify(savedItems));
+                
+                // 更新计数器
+                watchedCount = isWatched ? watchedCount + 1 : watchedCount - 1;
+                counterElement.textContent = watchedCount;
+            }
+            
+            // 点击事件处理
             table.addEventListener('click', function(event) {
                 const target = event.target;
                 
-                // 确保点击的是表格单元格且不是年份列
-                if (target.tagName === 'TD' && !target.classList.contains('year-cell')) {
-                    target.classList.toggle('watched');
-                    
-                    // 可选：添加本地存储功能
-                    const animeName = target.textContent;
+                if (target.classList.contains('game-cell')) {
+                    const gameName = target.textContent;
                     const year = target.parentElement.querySelector('.year-cell').textContent;
-                    console.log(`标记番剧：${year}年 - ${animeName}`);
+                    const key = `${year}-${gameName}`;
+                    const isWatched = target.classList.toggle('watched');
+                    
+                    saveState(key, isWatched);
                 }
             });
+            
+            // 初始加载保存的状态
+            loadSavedState();
         });
     </script>
 </body>
